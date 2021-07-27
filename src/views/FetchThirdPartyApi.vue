@@ -1,25 +1,33 @@
 <template>
   <div class="fetchThirdPartyApi">
     <button v-on:click="fetchThirdPartyApi">fetchThirdPartyApi</button>
-  <div>{{text}}</div>
-
+    <div>fetchThirdPartyApiData: {{thirdPartyApiText}}</div>
+    <button v-on:click="fetchSpringApi">fetchSpringApi</button>
+    <div>fetchSpringApi: {{springApiText}}</div>
   </div>
 </template>
 
 <script>
-const axios = require('axios');
+import axios from 'axios';
+
 export default {
   data: function(){
     return {
-      text: "content",
+      thirdPartyApiText: "content",
+      springApiText: "content",
     };
   },
   methods:{
         fetchThirdPartyApi: function () { 
-          this.text = axios.get('https://quoters.apps.pcfone.io/api/random')
-            .then(function (response) {
+          axios({
+            method: 'get',
+            baseURL: 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC&tsyms=USD',
+            //url: '/users',
+            'Content-Type': 'application/json',
+          }).then((response) => {
               // handle success
               console.log(response);
+              this.thirdPartyApiText = response.data;
             })
             .catch(function (error) {
               // handle error
@@ -28,6 +36,21 @@ export default {
             .then(function () {
               // always executed
             });
+        },
+        fetchSpringApi(){
+            axios.get('http://localhost:8090/greet/userName?userName=TOM')
+            .then((response) => {
+                // handle success
+                console.log(response);
+                this.springApiText = response.data;
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            }); 
         }
   },
   mounted:function(){},
